@@ -188,7 +188,7 @@ mark{background:#FFE7A3;color:inherit;border-radius:2px;padding:0 1px}
 .fsec{display:grid;gap:6px}
 .fsec h4{display:flex;align-items:center;gap:7px;font:700 12px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
 .fsec h4 .tt{width:22px;height:22px;border-radius:6px}
-.flist li.A::before{background:#C62828}.flist li.V::before{background:#D97F00}.flist li.R::before{background:#2E7D32}
+.flist li::before{background:var(--c)}
 
 /* Equipamentos */
 .qb{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#33475B;flex:none}
@@ -231,7 +231,7 @@ table.qx{border-collapse:separate;border-spacing:0;width:100%;min-width:720px}
 .fchip .tt{width:20px;height:20px;border-radius:5px}
 .fchip:hover{border-color:var(--tc)}
 .fchip[aria-pressed="true"]{box-shadow:0 0 0 2px var(--tc)}
-.fchip.A{--tc:#C62828;--tb:#FDF1F1}.fchip.V{--tc:#D97F00;--tb:#FEF6EA}.fchip.R{--tc:#2E7D32;--tb:#EFF7EF}
+.fchip{--tb:#F6F8FB}
 .fchips{display:flex;flex-wrap:wrap;gap:6px}
 .mf-sec{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
 .mf-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 16px;color:#fff}
@@ -316,7 +316,6 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
   <div class="wrap f-in">
     <div class="fgroup" id="fE"><span class="flabel">Eixo</span></div>
     <div class="fgroup" id="fO"><span class="flabel">ODS</span></div>
-    <div class="fgroup" id="fT"><span class="flabel">Risco</span></div>
     <div class="fgroup" id="fQ" hidden><span class="flabel">Equipamento</span></div>
     <div class="fgroup" id="fF" hidden></div>
     <div class="sbox"><label class="search" for="q"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="width:16px"><circle cx="7" cy="7" r="5" fill="none" stroke="#5B6678" stroke-width="2"/><line x1="11" y1="11" x2="15" y2="15" stroke="#5B6678" stroke-width="2"/></svg><input id="q" type="search" placeholder="Buscar meta, fator ou tema (ex.: saneamento)" autocomplete="off"></label>
@@ -341,11 +340,6 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
         </div>
       </div>
       <div class="card">
-        <div class="card-h"><h2>Classificação de risco dos fatores associados às metas</h2><p><span class="tagp">Proposta para validação</span></p></div>
-        <div class="defs row" id="defs"></div>
-        <p class="qual">A classificação é qualitativa: indica a natureza de cada fator em relação às metas, sem pontuação nem soma. Clique em um tipo para ver as metas e os fatores correspondentes.</p>
-      </div>
-      <div class="card">
         <div class="card-h"><h2>Matriz eixo × ODS</h2><p>Número de metas em cada cruzamento. Clique em uma célula para filtrar os dois.</p></div>
         <div class="mwrap"><table class="mx" id="mx"></table></div>
       </div>
@@ -364,12 +358,12 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
 
   <section class="view" id="v-metas" hidden>
     <div class="tbar"><div class="card-h" style="margin:0"><h2>Metas e fatores associados</h2><p id="tcount"></p></div><button class="btn" id="copy">Copiar tabela</button></div>
-    <p class="note" style="margin:-2px 0 12px">Cada meta aparece ao lado dos fatores que a afetam, classificados como ameaça, vulnerabilidade ou resiliência. Clique em um fator para ver todas as metas ligadas a ele. <span class="tagp">Proposta para validação</span></p>
+    <p class="note" style="margin:-2px 0 12px">Cada meta aparece ao lado dos fatores associados a ela. Clique em um fator para ver todas as metas ligadas a ele. <span class="tagp">Proposta para validação</span></p>
     <div class="mf-list" id="mf"></div>
   </section>
 
   <section class="view" id="v-fatores" hidden>
-    <div class="card-h" style="margin:0 2px 10px"><h2>Fatores associados por eixo e metas relacionadas</h2><p><span class="tagp">Proposta para validação</span></p></div>
+    <div class="card-h" style="margin:0 2px 10px"><h2>Fatores associados por eixo e metas relacionadas</h2><p>Clique em um fator para ver as metas ligadas a ele. <span class="tagp">Proposta para validação</span></p></div>
     <div class="fgrid" id="fg"></div>
   </section>
 
@@ -662,12 +656,12 @@ const tb=(k,st)=>`<span class="tt" style="background:${TIPOS[k].cor}${st||""}" t
 function pass(r,ign){
   if(!eOK(r.e.id,ign==="E"?"E":""))return false;
   if(ign!=="O"&&S.O.size&&!S.O.has(r.o))return false;
-  if(S.T.size&&!r.f.some(f=>S.T.has(f.tipo)))return false;
   if(S.F&&!r.f.some(f=>f.id===S.F))return false;
   if(S.q&&!r.k.includes(S.q))return false;
   return true;
 }
-const fChips=fs=>`<div class="fchips">${TK.flatMap(k=>fs.filter(f=>f.tipo===k&&(!S.T.size||S.T.has(k)))).map(f=>`<button class="fchip ${f.tipo}" data-f="${f.id}" aria-pressed="${S.F===f.id}" data-tip="<b>${TIPOS[f.tipo].nome}</b><br>${esc(f.t)}<br>Metas: ${f.metas.join(", ")}">${tb(f.tipo)}<span>${hiTxt(f.t)}</span></button>`).join("")}</div>`;
+const fCor=f=>EIXOS[+f.id.split("-")[0]-1].cor;
+const fChips=fs=>`<div class="fchips">${fs.map(f=>`<button class="fchip" style="--tc:${fCor(f)}" data-f="${f.id}" aria-pressed="${S.F===f.id}" data-tip="<b>Fator associado</b><br>${esc(f.t)}<br>Metas: ${f.metas.join(", ")}"><span>${hiTxt(f.t)}</span></button>`).join("")}</div>`;
 document.addEventListener("click",ev=>{const c=ev.target.closest(".fchip[data-f],.flist li[data-f]");if(!c)return;S.F=S.F===c.dataset.f?null:c.dataset.f;render()});
 const fRows=ign=>ROWS.filter(r=>pass(r,ign));
 function hiTxt(s){
@@ -678,7 +672,7 @@ function hiTxt(s){
 function factorsOf(e,ign=""){
   if(!eOK(e.id,ign.includes("E")?"E":""))return [];
   if(S.O.size&&!e.ods.some(o=>S.O.has(o)))return [];
-  let fs=e.fatores.filter(f=>ign.includes("T")||!S.T.size||S.T.has(f.tipo));
+  let fs=e.fatores.slice();
   if(S.F)fs=fs.filter(f=>f.id===S.F);
   if(!S.q)return fs;
   const m=fs.filter(f=>norm(f.t).includes(S.q));
@@ -691,16 +685,13 @@ const fE=document.getElementById("fE"),fO=document.getElementById("fO");
 fE.insertAdjacentHTML("beforeend",EIXOS.map(e=>`<button class="etog" data-e="${e.id}" aria-pressed="false" data-tip="<b>Eixo ${e.id}</b><br>${esc(e.nome)}">${eb(e)}<span class="nm">${e.id}</span></button>`).join(""));
 fO.insertAdjacentHTML("beforeend",ODS_IDS.map(o=>`<button class="otog" data-o="${o}" aria-pressed="false" aria-label="ODS ${o}: ${ODS[o][0]}" data-tip="<b>ODS ${o}</b><br>${esc(ODS[o][0])}">${ob(o)}</button>`).join(""));
 const tg=(set,v)=>{set.has(v)?set.delete(v):set.add(v)};
-const fT=document.getElementById("fT");
-fT.insertAdjacentHTML("beforeend",TK.map(k=>`<button class="ttog" data-t="${k}" aria-pressed="false" data-tip="<b>${TIPOS[k].nome}</b><br>${esc(TIPOS[k].def)}">${tb(k)}${TIPOS[k].nome}</button>`).join(""));
 document.getElementById("fQ").addEventListener("click",ev=>{const b=ev.target.closest("[data-q]");if(b){S.Q.delete(b.dataset.q);render()}});
-fT.addEventListener("click",ev=>{const b=ev.target.closest("[data-t]");if(b){tg(S.T,b.dataset.t);render()}});
 document.getElementById("fF").addEventListener("click",ev=>{if(ev.target.closest("[data-clear-f]")){S.F=null;render()}});
 fE.addEventListener("click",ev=>{const b=ev.target.closest("[data-e]");if(b){tg(S.E,+b.dataset.e);render()}});
 fO.addEventListener("click",ev=>{const b=ev.target.closest("[data-o]");if(b){tg(S.O,+b.dataset.o);render()}});
 const q=document.getElementById("q");
 q.addEventListener("input",()=>{S.q=norm(q.value.trim());render()});
-document.getElementById("clr").addEventListener("click",()=>{S.E.clear();S.O.clear();S.T.clear();S.Q.clear();S.F=null;S.q="";q.value="";render()});
+document.getElementById("clr").addEventListener("click",()=>{S.E.clear();S.O.clear();S.Q.clear();S.F=null;S.q="";q.value="";render()});
 
 /* Abas */
 const tabs=document.getElementById("tabs");
@@ -771,10 +762,6 @@ function chartO(){
 }
 document.getElementById("legO").innerHTML=EIXOS.map(e=>`<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:11px;height:11px;border-radius:3px;background:${e.cor};display:inline-block"></i>Eixo ${e.id}</span>`).join("");
 
-function defs(){
-  document.getElementById("defs").innerHTML=TK.map(k=>`<button class="def" data-t="${k}" style="--c:${TIPOS[k].cor}" aria-pressed="${S.T.has(k)}">${tb(k)}<span><strong>${TIPOS[k].nome}</strong><small>${TIPOS[k].def}</small></span></button>`).join("");
-}
-document.getElementById("defs").addEventListener("click",ev=>{const b=ev.target.closest("[data-t]");if(b){tg(S.T,b.dataset.t);render()}});
 
 /* Matriz */
 function matrix(){
@@ -828,7 +815,7 @@ const links=[],eN={},oN={};
   net.addEventListener("keydown",ev=>{if((ev.key==="Enter"||ev.key===" ")&&ev.target.closest(".node")){ev.preventDefault();ev.target.dispatchEvent(new MouseEvent("click",{bubbles:true}))}});
 })();
 function paintNet(){
-  const rows=fRows(),active=S.E.size||S.O.size||S.q||S.T.size||S.F||S.Q.size;
+  const rows=fRows(),active=S.E.size||S.O.size||S.q||S.F||S.Q.size;
   const lk=new Set(rows.map(r=>r.e.id+"-"+r.o)),eS=new Set(rows.map(r=>r.e.id)),oS=new Set(rows.map(r=>r.o));
   links.forEach(p=>{const on=lk.has(p._e+"-"+p._o);p.classList.toggle("on",!!active&&on);p.classList.toggle("dim",!!active&&!on)});
   for(const e in eN)eN[e].classList.toggle("faded",!!active&&!eS.has(+e));
@@ -846,13 +833,13 @@ function table(){
   document.getElementById("tcount").textContent=`${new Set(rows.map(r=>r.c)).size} metas · ${new Set(rows.map(r=>r.e.id)).size} eixos`;
   const html=EIXOS.map(e=>{const rs=rows.filter(r=>r.e===e);if(!rs.length)return "";
     return `<section class="mf-sec"><div class="mf-head" style="background:${e.cor}">${eb(e)}<div><small>Eixo ${e.id}</small><h3>${esc(e.nome)}</h3></div><p>${esc(e.desc)}</p></div>
-    <div class="mf-cols"><span>Meta do ODS</span><span>Fatores associados · classificação de risco</span></div>
+    <div class="mf-cols"><span>Meta do ODS</span><span>Fatores associados</span></div>
     ${rs.map(r=>`<div class="mf-row"><div class="mf-meta">${ob(r.o)}<b style="color:${e.cor}">${r.c}</b><p>${hiTxt(r.t)}<br><span class="note">ODS ${r.o} · ${esc(ODS[r.o][0])}</span></p></div><div class="mf-fat">${r.f.length?fChips(r.f):`<span class="none">Sem fator vinculado</span>`}</div></div>`).join("")}</section>`}).join("");
   document.getElementById("mf").innerHTML=html||`<div class="card empty">Nenhuma meta com esses filtros.</div>`;
   table.rows=rows;
 }
 document.getElementById("copy").addEventListener("click",async ev=>{
-  const b=ev.currentTarget,txt=["Eixo\tNome do eixo\tODS\tMeta\tDescrição da meta\tAmeaças\tVulnerabilidades\tResiliências",...table.rows.map(r=>[r.e.id,r.e.nome,r.o,r.c,r.t,...TK.map(k=>r.f.filter(f=>f.tipo===k).map(f=>f.t).join("; "))].join("\t"))].join("\n");
+  const b=ev.currentTarget,txt=["Eixo\tNome do eixo\tODS\tMeta\tDescrição da meta\tFatores associados",...table.rows.map(r=>[r.e.id,r.e.nome,r.o,r.c,r.t,r.f.map(f=>f.t).join("; ")].join("\t"))].join("\n");
   try{await navigator.clipboard.writeText(txt);b.textContent="Copiada ✓"}catch(_){b.textContent="Não foi possível copiar"}
   setTimeout(()=>b.textContent="Copiar tabela",1800)});
 
@@ -861,7 +848,7 @@ function factors(){
   const fg=document.getElementById("fg");
   const cards=EIXOS.map(e=>{const fs=factorsOf(e);if(!fs.length)return "";
     const os=e.ods.filter(o=>!S.O.size||S.O.has(o));
-    const secs=TK.map(k=>{const l=fs.filter(f=>f.tipo===k);return l.length?`<div class="fsec"><h4>${tb(k)}${TIPOS[k].plural}</h4><ul class="flist">${l.map(f=>`<li class="${k}${S.F===f.id?" sel":""}" data-f="${f.id}" data-tip="Clique para ver as metas ligadas a este fator"><span><span class="tx">${hiTxt(f.t)}</span><span class="codes">Metas ${f.metas.join(" · ")}</span></span></li>`).join("")}</ul></div>`:""}).join("");
+    const secs=`<div class="fsec"><h4>Fatores associados</h4><ul class="flist" style="--c:${e.cor}">${fs.map(f=>`<li class="${S.F===f.id?"sel":""}" data-f="${f.id}" data-tip="Clique para ver as metas ligadas a este fator"><span><span class="tx">${hiTxt(f.t)}</span><span class="codes">Metas ${f.metas.join(" · ")}</span></span></li>`).join("")}</ul></div>`;
     return `<div class="fcard"><div class="fhead" style="background:${e.cor}">${eb(e)}<div><small>Eixo ${e.id}</small><h3>${esc(e.nome)}</h3></div></div>
     <div class="fbody"><p>${hiTxt(e.desc)}</p>${secs}
     <div class="fsec"><h4>Equipamentos de referência</h4><div class="qrow">${EQUIP.filter(q=>q.eixos.includes(e.id)).map(q=>`<span data-tip="<b>${esc(q.nome)}</b><br>${q.eixos[0]===e.id?"Eixo principal":"Eixo complementar"}">${qb(q,q.eixos[0]===e.id?"":"background:#8796A8")}</span>`).join("")}</div></div>
@@ -905,13 +892,12 @@ function render(){
   fE.querySelectorAll("[data-e]").forEach(b=>{const on=S.E.has(+b.dataset.e);b.setAttribute("aria-pressed",on);b.style.background=on?EIXOS[+b.dataset.e-1].cor:""});
   fO.querySelectorAll("[data-o]").forEach(b=>b.setAttribute("aria-pressed",S.O.has(+b.dataset.o)));
   fO.classList.toggle("has-o",S.O.size>0);
-  fT.querySelectorAll("[data-t]").forEach(b=>{const on=S.T.has(b.dataset.t);b.setAttribute("aria-pressed",on);b.style.background=on?TIPOS[b.dataset.t].cor:""});
-  document.getElementById("clr").disabled=!(S.E.size||S.O.size||S.T.size||S.Q.size||S.F||S.q);
+  document.getElementById("clr").disabled=!(S.E.size||S.O.size||S.Q.size||S.F||S.q);
   const fQ=document.getElementById("fQ");fQ.hidden=!S.Q.size;
   fQ.innerHTML=`<span class="flabel">Equipamento</span>`+[...S.Q].map(k=>`<button class="qchip" data-q="${k}" aria-label="Remover filtro ${EQ[k].nome}">${qb(EQ[k])}${EQ[k].sigla} ×</button>`).join("");
   const fF=document.getElementById("fF");fF.hidden=!S.F;
-  if(S.F){const f=FID[S.F];fF.innerHTML=`<span class="flabel">Fator</span><button class="fchip-f" style="background:${TIPOS[f.tipo].cor}" data-clear-f aria-label="Remover filtro de fator">${tb(f.tipo)}<span>${esc(f.t)}</span> ×</button>`}
-  kpis(fRows());chartE();chartO();defs();matrix();paintNet();table();factors();equip();
+  if(S.F){const f=FID[S.F];fF.innerHTML=`<span class="flabel">Fator</span><button class="fchip-f" style="background:${fCor(f)};padding-left:11px" data-clear-f aria-label="Remover filtro de fator"><span>${esc(f.t)}</span> ×</button>`}
+  kpis(fRows());chartE();chartO();matrix();paintNet();table();factors();equip();
 }
 const h0=location.hash.slice(1);
 setTab(["visao","rede","metas","fatores","equip"].includes(h0)?h0:"visao");

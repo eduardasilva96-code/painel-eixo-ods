@@ -1,12 +1,12 @@
 # Painel · Eixos Estratégicos e ODS
 
-Painel interativo que relaciona os 6 eixos estratégicos aos Objetivos de Desenvolvimento Sustentável (ODS 1 a 18). Mostra cada meta ao lado dos fatores associados a ela, com a classificação de risco qualitativa (ameaça, vulnerabilidade ou resiliência), e os equipamentos públicos do território.
+Painel interativo que relaciona os 6 eixos estratégicos aos Objetivos de Desenvolvimento Sustentável (ODS 1 a 18). Mostra cada meta ao lado dos fatores associados a ela e os equipamentos públicos do território.
 
 ## Conteúdo
 
 - `index.html`: o painel. É um arquivo único e não depende de servidor.
 - `dados/base_powerbi_eixos_ods.xlsx`: a base estruturada para importar no Power BI. A aba Leia-me explica os relacionamentos e as medidas DAX.
-- `icones/`: os ícones em PNG dos eixos, dos ODS, dos tipos de fator e dos equipamentos.
+- `icones/`: os ícones em PNG dos eixos, dos ODS e dos equipamentos.
 - `logos/`: os logos do PICAPS e da roda dos ODS.
 
 ## Publicar no GitHub Pages
@@ -19,6 +19,5 @@ Painel interativo que relaciona os 6 eixos estratégicos aos Objetivos de Desenv
 ## Status do conteúdo
 
 - As metas dos ODS 1 a 17 são resumos das metas da Agenda 2030 (ONU). As metas do ODS 18 resumem o ODS 18, Igualdade Étnico-Racial (CNODS, iniciativa voluntária do Brasil).
-- A classificação de risco dos fatores é qualitativa: os fatores não são pontuados nem somados.
 - Ainda precisam ser validados pela equipe: as descrições dos eixos, os fatores associados, a escolha de metas por eixo, a ligação entre fatores e metas e a ligação entre equipamentos e eixos.
 - Os ícones de equipamentos públicos são provisórios.
