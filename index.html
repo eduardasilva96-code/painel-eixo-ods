@@ -284,7 +284,64 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
   .filters{position:static}
   .etog span.nm{display:none}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* Barra de filtros ativos */
+.activebar{background:#FFF4D6;border-top:1px solid #F1D48A;border-bottom:1px solid #F1D48A}
+.activebar[hidden]{display:none}
+.ab-in{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding-top:9px;padding-bottom:9px}
+.ab-l{font:700 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:#6B4E00;display:flex;align-items:center;gap:6px}
+.ab-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:200px}
+.ab-chip{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:4px 6px 4px 5px;color:#fff;font:600 13.5px var(--body);cursor:pointer;max-width:360px}
+.ab-chip .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-chip .x{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);font:700 13px var(--body);line-height:1}
+.ab-chip:hover .x{background:rgba(255,255,255,.45)}
+.ab-chip .ob,.ab-chip .eb{width:22px;height:22px}
+.ab-chip.txt{background:#33475B;padding-left:11px}
+.ab-msg{color:#6B4E00;font-size:14px}
+.ab-btns{display:flex;gap:8px}
+.ab-btn{display:inline-flex;align-items:center;gap:7px;border-radius:9px;padding:8px 14px;font:700 14px var(--body);cursor:pointer;border:2px solid var(--ink)}
+.ab-btn.back{background:var(--surface);color:var(--ink)}
+.ab-btn.back:hover{background:var(--soft)}
+.ab-btn.back[disabled]{opacity:.4;cursor:default}
+.ab-btn.clear-all{background:var(--ink);color:#fff}
+.ab-btn.clear-all:hover{background:#2A3A52}
+.ab-btn kbd{font:600 11px var(--body);border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.7}
+
+/* Roda dos ODS */
+@keyframes giro{to{transform:rotate(360deg)}}
+.bb-r .roda{animation:giro 40s linear infinite}
+.bb-r .roda:hover{animation-duration:6s}
+.spin{animation:giro 90s linear infinite}
+.spin.paused,.spin:hover{animation-play-state:paused}
+.upr{transform-box:fill-box;transform-origin:center;animation:giro 90s linear infinite reverse}
+.spin.paused .upr,.spin:hover .upr{animation-play-state:paused}
+.wseg{cursor:pointer;transition:transform .25s ease,opacity .2s}
+.wseg:hover,.wseg.sel,.wseg.foc{transform:translate(var(--dx),var(--dy))}
+.wheel.has-sel .wseg:not(.sel){opacity:.3}
+.wheel.has-sel .wseg:not(.sel):hover{opacity:.75}
+.wseg:focus{outline:none}
+.wseg:focus-visible path{stroke:var(--ink);stroke-width:3}
+.wcard{display:grid;grid-template-columns:minmax(280px,440px) minmax(0,1fr);gap:24px;align-items:center}
+.wbox{position:relative;max-width:440px;width:100%;margin:0 auto}
+.wctr{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.wctr .in{width:42%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;padding:8px}
+.wctr b{display:block;font:800 30px/1 var(--display)}
+.wctr span{display:block;font-size:12.5px;color:var(--muted);line-height:1.25;margin-top:4px}
+.wctr .ob{width:54px;height:54px;margin:0 auto 6px;border-radius:12px}
+.winfo{display:grid;gap:10px;align-content:start;min-height:300px}
+.winfo .hd{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.winfo .hd .ob{width:56px;height:56px;border-radius:12px}
+.winfo .hd small{font:700 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.winfo .hd h3{font-size:26px;line-height:1.05}
+.winfo .es{display:flex;gap:6px;flex-wrap:wrap}
+.winfo .es .eb{width:30px;height:30px}
+.winfo ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:260px;overflow:auto}
+.winfo ul li{display:grid;grid-template-columns:48px 1fr;gap:8px;font-size:14px;line-height:1.35}
+.winfo li b{font:700 16px var(--display);font-variant-numeric:tabular-nums}
+.winfo .act{display:flex;gap:8px;flex-wrap:wrap}
+.winfo .guide{color:var(--muted);font-size:15px;max-width:52ch}
+.winfo .guide ol{margin:6px 0 0;padding-left:20px;display:grid;gap:4px}
+@media (max-width:900px){.wcard{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 </style>
 </head>
 <body>
@@ -316,10 +373,18 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
   <div class="wrap f-in">
     <div class="fgroup" id="fE"><span class="flabel">Eixo</span></div>
     <div class="fgroup" id="fO"><span class="flabel">ODS</span></div>
-    <div class="fgroup" id="fQ" hidden><span class="flabel">Equipamento</span></div>
-    <div class="fgroup" id="fF" hidden></div>
     <div class="sbox"><label class="search" for="q"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="width:16px"><circle cx="7" cy="7" r="5" fill="none" stroke="#5B6678" stroke-width="2"/><line x1="11" y1="11" x2="15" y2="15" stroke="#5B6678" stroke-width="2"/></svg><input id="q" type="search" placeholder="Buscar meta, fator ou tema (ex.: saneamento)" autocomplete="off"></label>
     <button class="clear" id="clr" disabled>Limpar</button></div>
+  </div>
+  <div class="activebar" id="ab" hidden role="region" aria-label="Filtros ativos">
+    <div class="wrap ab-in">
+      <span class="ab-l"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="width:16px"><path d="M3 5h18l-7 8v6l-4 2v-8z" fill="none" stroke="#6B4E00" stroke-width="2" stroke-linejoin="round"/></svg>Filtros ativos</span>
+      <div class="ab-chips" id="abChips"></div>
+      <div class="ab-btns">
+        <button class="ab-btn back" id="back" title="Desfaz a última seleção (tecla Esc)">← Voltar <kbd>Esc</kbd></button>
+        <button class="ab-btn clear-all" id="clrAll">Limpar todos os filtros ×</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -328,6 +393,13 @@ footer{color:var(--muted);font-size:12.5px;padding:4px 0 26px;display:grid;gap:4
 
   <section class="view" id="v-visao">
     <div style="display:grid;gap:14px">
+      <div class="card">
+        <div class="card-h"><h2>Roda dos ODS</h2><p>Passe o mouse para ver cada objetivo. Clique para filtrar o painel.</p></div>
+        <div class="wcard">
+          <div class="wbox"><svg id="wheelBig" viewBox="0 0 400 400" role="group" aria-label="Roda interativa dos 18 ODS"></svg><div class="wctr"><div class="in" id="wctr"></div></div></div>
+          <div class="winfo" id="winfo"></div>
+        </div>
+      </div>
       <div class="g2">
         <div class="card">
           <div class="card-h"><h2>Metas por eixo</h2><p>Clique em uma barra para filtrar</p></div>
@@ -685,13 +757,12 @@ const fE=document.getElementById("fE"),fO=document.getElementById("fO");
 fE.insertAdjacentHTML("beforeend",EIXOS.map(e=>`<button class="etog" data-e="${e.id}" aria-pressed="false" data-tip="<b>Eixo ${e.id}</b><br>${esc(e.nome)}">${eb(e)}<span class="nm">${e.id}</span></button>`).join(""));
 fO.insertAdjacentHTML("beforeend",ODS_IDS.map(o=>`<button class="otog" data-o="${o}" aria-pressed="false" aria-label="ODS ${o}: ${ODS[o][0]}" data-tip="<b>ODS ${o}</b><br>${esc(ODS[o][0])}">${ob(o)}</button>`).join(""));
 const tg=(set,v)=>{set.has(v)?set.delete(v):set.add(v)};
-document.getElementById("fQ").addEventListener("click",ev=>{const b=ev.target.closest("[data-q]");if(b){S.Q.delete(b.dataset.q);render()}});
-document.getElementById("fF").addEventListener("click",ev=>{if(ev.target.closest("[data-clear-f]")){S.F=null;render()}});
 fE.addEventListener("click",ev=>{const b=ev.target.closest("[data-e]");if(b){tg(S.E,+b.dataset.e);render()}});
 fO.addEventListener("click",ev=>{const b=ev.target.closest("[data-o]");if(b){tg(S.O,+b.dataset.o);render()}});
 const q=document.getElementById("q");
 q.addEventListener("input",()=>{S.q=norm(q.value.trim());render()});
-document.getElementById("clr").addEventListener("click",()=>{S.E.clear();S.O.clear();S.Q.clear();S.F=null;S.q="";q.value="";render()});
+function clearAll(){if(!(S.E.size||S.O.size||S.Q.size||S.F||S.q))return;S.E.clear();S.O.clear();S.Q.clear();S.F=null;S.q="";q.value="";CLEARED=true;render()}
+document.getElementById("clr").addEventListener("click",clearAll);
 
 /* Abas */
 const tabs=document.getElementById("tabs");
@@ -791,7 +862,7 @@ const links=[],eN={},oN={};
     const g=el("linearGradient",{id:"g"+id,gradientUnits:"userSpaceOnUse",x1,y1,x2,y2},defs);
     el("stop",{offset:"0.3","stop-color":EIXOS[id-1].cor},g);el("stop",{offset:"0.7","stop-color":EIXOS[nx-1].cor},g);
     el("line",{x1,y1,x2,y2,stroke:`url(#g${id})`,"stroke-width":16,"stroke-linecap":"round",opacity:.9},gR)});
-  el("image",{href:LOGO.roda,x:CX-62,y:CY-78,width:124,height:124},gR);
+  makeWheel(gR,CX,CY-14,66,30,{pop:7,gap:2.6});
   el("text",{x:CX,y:CY+76,"text-anchor":"middle","font-family":"Barlow Condensed, Arial Narrow, sans-serif","font-weight":800,"font-size":26,fill:"#16202E"},gR).textContent="6 EIXOS · 18 ODS";
   EIXOS.forEach(e=>e.ods.forEach(o=>{const [ex,ey]=pos["e"+e.id],[ox,oy]=pos["o"+o];
     const qx=CX+(ox-CX)*.62+(ex-CX)*.35,qy=CY+(oy-CY)*.62+(ey-CY)*.35;
@@ -888,16 +959,114 @@ document.addEventListener("mousemove",ev=>{
   tip.style.left=x+"px";tip.style.top=y+"px";
 });
 
+/* Histórico de filtros (Voltar) */
+const snap=()=>JSON.stringify({E:[...S.E].sort((a,b)=>a-b),O:[...S.O].sort((a,b)=>a-b),Q:[...S.Q].sort(),F:S.F,qv:q.value});
+let HIST=[],LAST=snap(),RESTORING=false,LASTQ=false,CLEARED=false;
+function track(){
+  const cur=snap();
+  if(cur!==LAST&&!RESTORING){
+    const p=JSON.parse(LAST),c=JSON.parse(cur),qOnly=p.qv!==c.qv&&JSON.stringify({...p,qv:""})===JSON.stringify({...c,qv:""});
+    if(!(qOnly&&LASTQ))HIST.push(LAST);
+    LASTQ=qOnly;if(HIST.length>60)HIST.shift();
+  }
+  if(cur!==LAST&&!RESTORING&&!CLEARED_THIS)CLEARED=false;
+  LAST=cur;RESTORING=false;CLEARED_THIS=false;
+}
+let CLEARED_THIS=false;
+function goBack(){
+  if(!HIST.length)return;
+  const s=JSON.parse(HIST.pop());
+  S.E=new Set(s.E);S.O=new Set(s.O);S.Q=new Set(s.Q);S.F=s.F;q.value=s.qv;S.q=norm(s.qv.trim());
+  RESTORING=true;LASTQ=false;CLEARED=false;render();
+}
+document.getElementById("back").addEventListener("click",goBack);
+document.getElementById("clrAll").addEventListener("click",()=>{CLEARED_THIS=true;clearAll()});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&document.activeElement!==q){goBack()}});
+function activeBar(){
+  const ab=document.getElementById("ab"),act=S.E.size||S.O.size||S.Q.size||S.F||S.q;
+  ab.hidden=!(act||(CLEARED&&HIST.length));
+  const x='<span class="x" aria-hidden="true">×</span>';
+  const chips=[
+    ...[...S.E].sort((a,b)=>a-b).map(id=>{const e=EIXOS[id-1];return `<button class="ab-chip" style="background:${e.cor}" data-rm="E:${id}" aria-label="Remover filtro Eixo ${id}">${eb(e)}<span class="lb">Eixo ${id} · ${esc(e.nome)}</span>${x}</button>`}),
+    ...[...S.O].sort((a,b)=>a-b).map(o=>`<button class="ab-chip" style="background:${ODS[o][2]}" data-rm="O:${o}" aria-label="Remover filtro ODS ${o}">${ob(o)}<span class="lb">ODS ${o} · ${esc(ODS[o][1])}</span>${x}</button>`),
+    ...[...S.Q].map(k=>`<button class="ab-chip" style="background:#33475B" data-rm="Q:${k}" aria-label="Remover filtro ${esc(EQ[k].nome)}">${qb(EQ[k],"width:22px;height:22px;background:rgba(255,255,255,.15)")}<span class="lb">${esc(EQ[k].sigla)}</span>${x}</button>`),
+    ...(S.F?[`<button class="ab-chip" style="background:${fCor(FID[S.F])};padding-left:11px" data-rm="F:" aria-label="Remover filtro de fator"><span class="lb">Fator: ${esc(FID[S.F].t)}</span>${x}</button>`]:[]),
+    ...(S.q?[`<button class="ab-chip txt" data-rm="q:" aria-label="Remover busca"><span class="lb">Busca: “${esc(q.value.trim())}”</span>${x}</button>`]:[])
+  ];
+  document.getElementById("abChips").innerHTML=act?chips.join(""):`<span class="ab-msg">Filtros removidos. Use “Voltar” para recuperar a seleção anterior.</span>`;
+  document.getElementById("back").disabled=!HIST.length;
+  document.getElementById("clrAll").hidden=!act;
+}
+document.getElementById("abChips").addEventListener("click",ev=>{const b=ev.target.closest("[data-rm]");if(!b)return;
+  const [k,v]=b.dataset.rm.split(":");
+  if(k==="E")S.E.delete(+v);else if(k==="O")S.O.delete(+v);else if(k==="Q")S.Q.delete(v);else if(k==="F")S.F=null;else{S.q="";q.value=""}
+  render()});
+
+/* Roda dos ODS */
+function arcPath(cx,cy,R,r0,a0,a1){
+  const p=(r,a)=>`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`;
+  return `M${p(r0,a0)} L${p(R,a0)} A${R},${R} 0 0 1 ${p(R,a1)} L${p(r0,a1)} A${r0},${r0} 0 0 0 ${p(r0,a0)} Z`;
+}
+var WHEELS=WHEELS||[];
+function makeWheel(svgParent,cx,cy,R,r0,opt){
+  const outer=el("g",{class:"wheel"},svgParent);
+  const spin=el("g",{class:"spin",style:`transform-origin:${cx}px ${cy}px`},outer);
+  const segs={};
+  ODS_IDS.forEach((o,i)=>{
+    const gap=opt.gap||2,a0=(-90+i*20+gap/2)*Math.PI/180,a1=(-90+(i+1)*20-gap/2)*Math.PI/180,am=(a0+a1)/2;
+    const g=el("g",{class:"wseg",tabindex:0,role:"button","data-o":o,"aria-label":`ODS ${o}: ${ODS[o][0]}`,"data-tip":`<b>ODS ${o}</b><br>${esc(ODS[o][0])}<br>${ROWS.filter(r=>r.o===o).length} metas · ${eixosDoO(o).length} eixos`},spin);
+    g.style.setProperty("--dx",(Math.cos(am)*opt.pop).toFixed(1)+"px");g.style.setProperty("--dy",(Math.sin(am)*opt.pop).toFixed(1)+"px");
+    el("path",{d:arcPath(cx,cy,R,r0,a0,a1),fill:ODS[o][2]},g);
+    if(opt.icons){const ri=(R+r0)/2,s=opt.icons;
+      el("image",{class:"upr",href:ICON["o"+o],x:(cx+ri*Math.cos(am)-s/2).toFixed(1),y:(cy+ri*Math.sin(am)-s/2).toFixed(1),width:s,height:s,preserveAspectRatio:"xMidYMid meet"},g)}
+    segs[o]=g;
+  });
+  outer.addEventListener("click",ev=>{const g=ev.target.closest(".wseg");if(g){ev.stopPropagation();tg(S.O,+g.dataset.o);render()}});
+  outer.addEventListener("keydown",ev=>{const g=ev.target.closest(".wseg");if(g&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();tg(S.O,+g.dataset.o);render()}});
+  if(opt.onFocus){
+    outer.addEventListener("mouseover",ev=>{const g=ev.target.closest(".wseg");if(g)opt.onFocus(+g.dataset.o)});
+    outer.addEventListener("focusin",ev=>{const g=ev.target.closest(".wseg");if(g)opt.onFocus(+g.dataset.o)});
+    outer.addEventListener("mouseleave",()=>opt.onFocus(null));
+  }
+  const w={outer,spin,segs};(WHEELS=WHEELS||[]).push(w);return w;
+}
+function eixosDoO(o){return EIXOS.filter(e=>e.ods.includes(o))}
+let WFOC=null;
+function wheelInfo(o){
+  WFOC=o;
+  const show=o||(S.O.size===1?[...S.O][0]:null);
+  const ctr=document.getElementById("wctr"),inf=document.getElementById("winfo");
+  if(!show){
+    ctr.innerHTML=`<div><b>18</b><span>Objetivos de Desenvolvimento Sustentável</span></div>`;
+    inf.innerHTML=`<div class="guide"><h3 style="font-size:24px;color:var(--ink)">Explore pela roda</h3><ol><li>Passe o mouse sobre um ODS para ver os eixos e as metas ligados a ele.</li><li>Clique para filtrar todo o painel por esse ODS. Dá para escolher mais de um.</li><li>Para desfazer, use “Voltar” ou o × na barra amarela de filtros ativos.</li></ol></div>`;
+    return;
+  }
+  const es=eixosDoO(show),rs=ROWS.filter(r=>r.o===show).sort((a,b)=>a.e.id-b.e.id||cmpCode(a.c,b.c)),on=S.O.has(show);
+  ctr.innerHTML=`<div>${ob(show)}<b>ODS ${show}</b><span>${rs.length} metas · ${es.length} ${es.length>1?"eixos":"eixo"}</span></div>`;
+  inf.innerHTML=`<div class="hd">${ob(show)}<div><small>ODS ${show}</small><h3>${esc(ODS[show][0])}</h3></div></div>
+   <div class="es">${es.map(e=>`<span class="eb" style="background:${e.cor}" data-tip="<b>Eixo ${e.id}</b><br>${esc(e.nome)}"><img class="ic" src="${ICON["e"+e.id]}" alt=""></span>`).join("")}</div>
+   <ul>${rs.map(r=>`<li><b style="color:${r.e.cor}">${r.c}</b><span>${esc(r.t)}</span></li>`).join("")}</ul>
+   <div class="act"><button class="ab-btn ${on?"back":"clear-all"}" data-wo="${show}">${on?"Remover este ODS do filtro ×":"Filtrar o painel por este ODS"}</button></div>`;
+}
+document.getElementById("winfo").addEventListener("click",ev=>{const b=ev.target.closest("[data-wo]");if(b){tg(S.O,+b.dataset.wo);render()}});
+function paintWheels(){
+  WHEELS.forEach(w=>{
+    w.outer.classList.toggle("has-sel",S.O.size>0);
+    w.spin.classList.toggle("paused",S.O.size>0);
+    for(const o in w.segs){w.segs[o].classList.toggle("sel",S.O.has(+o))}
+  });
+  wheelInfo(WFOC);
+}
+makeWheel(document.getElementById("wheelBig"),200,200,192,92,{pop:12,icons:36,gap:1.6,onFocus:o=>wheelInfo(o)});
+
 function render(){
+  track();
   fE.querySelectorAll("[data-e]").forEach(b=>{const on=S.E.has(+b.dataset.e);b.setAttribute("aria-pressed",on);b.style.background=on?EIXOS[+b.dataset.e-1].cor:""});
   fO.querySelectorAll("[data-o]").forEach(b=>b.setAttribute("aria-pressed",S.O.has(+b.dataset.o)));
   fO.classList.toggle("has-o",S.O.size>0);
   document.getElementById("clr").disabled=!(S.E.size||S.O.size||S.Q.size||S.F||S.q);
-  const fQ=document.getElementById("fQ");fQ.hidden=!S.Q.size;
-  fQ.innerHTML=`<span class="flabel">Equipamento</span>`+[...S.Q].map(k=>`<button class="qchip" data-q="${k}" aria-label="Remover filtro ${EQ[k].nome}">${qb(EQ[k])}${EQ[k].sigla} ×</button>`).join("");
-  const fF=document.getElementById("fF");fF.hidden=!S.F;
-  if(S.F){const f=FID[S.F];fF.innerHTML=`<span class="flabel">Fator</span><button class="fchip-f" style="background:${fCor(f)};padding-left:11px" data-clear-f aria-label="Remover filtro de fator"><span>${esc(f.t)}</span> ×</button>`}
-  kpis(fRows());chartE();chartO();matrix();paintNet();table();factors();equip();
+  activeBar();
+  kpis(fRows());chartE();chartO();matrix();paintNet();table();factors();equip();paintWheels();
 }
 const h0=location.hash.slice(1);
 setTab(["visao","rede","metas","fatores","equip"].includes(h0)?h0:"visao");
